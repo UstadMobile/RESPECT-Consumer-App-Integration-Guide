@@ -78,7 +78,7 @@ val result = respectConsumerManager.requestSingleSignOn(authRequest)
 ### Supporting launching a specific Learning Unit
 
 Launching a specific Learning Unit is based on normal [app links](https://developer.android.com/training/app-links). The URI will 
-be the Learning Unit to be completed with the following additional parameters 
+be the Learning Unit to be completed with the following additional parameters:
 * respectLaunchVersion=1 Indicates that the launch is coming from a RESPECT Launcher app
 * auth : The authentication to use with [xAPI](https://www.xapi.com) and/or [AGS](https://www.imsglobal.org/spec/lti-ags/v2p0/) API. 
 * Some or none of the [OpenID Standard Claims](https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims), e.g. given_name, locale, sub,
@@ -87,4 +87,13 @@ be the Learning Unit to be completed with the following additional parameters
 * endpoint : the HTTP url to use for xAPI ( named 'endpoint' because this is as per the Rustici launch spec, see below)
 * All of the [Rustici Launch Parameters](https://github.com/RusticiSoftware/launch/blob/master/lms_lrs.md) as per the xAPI spec.
 
- 
+E.g. where a Learning Unit ID is https://example.org/topic/learningUnit1, then :
+```
+https://example.org/topic/learningUnit1?respectLaunchVersion=1&auth=[secret]&given_name=John&locale=en-US
+   &endpoint_lti_ags=http://localhost:8097/api/ags
+   &endpoint=http://localhost:8097/api/xapi
+   &actor={ "name" : ["Project Tin Can"], "mbox" : ["mailto:tincan@scorm.com"] }   
+   &registration=760e3480-ba55-4991-94b0-01820dbd23a2   
+   &activity_id=https://example.org/topic/learningUnit1
+```
+
