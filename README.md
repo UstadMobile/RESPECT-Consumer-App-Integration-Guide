@@ -108,9 +108,14 @@ val result = respectConsumerManager.requestSingleSignOn(authRequest)
  */  
 ```  
 
+Once the user has signed in, the client app can use the HTTP APIs to save and retrieve learner data, progress information, etc.
+
 ### Supporting launching a specific Learning Unit
 
 Launching a specific Learning Unit is based on normal [app links](https://developer.android.com/training/app-links). The app links must be verified as usual.
+
+When the respectLaunchVersion parameter is included, the client app MUST use the provided endpoints to send progress information back to the RESPECT
+laucnher app and then finish (exit) the activity when the learning unit is complete.
 
 The URI launched by the RESPECT launcher will be the Learning Unit to be completed with the following additional parameters:
 * respectLaunchVersion=1 Indicates that the launch is coming from a RESPECT Launcher app
