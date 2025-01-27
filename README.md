@@ -55,6 +55,39 @@ fun onCreate(savedInstanceState: Bundle?) {
 }
 ```
 
+### Use the libRESPECT Proxy Cache
+
+The RESPECT Launcher app MAY send your app a signal to download a specific Learning Unit for offline use. This
+can be handled using the libRESPECT cache and service. 
+
+1) Add the service to AndroidManifest.xml:
+```
+<service
+      android:name="world.respect.librespect.clientdownloadservice"
+      android:enabled="true"
+      android:exported="true">
+
+<intent-filter>
+    <action android:name="respect.world.librespect.ACTION_CLIENT_LU_DOWNLOAD" />
+    <action android:name="respect.world.librespect.ACTION_CLIENT_LU_RELEASE" />
+</intent-filter>
+</service>
+```
+
+2) Use the libRESPECT HTTP Cache in your Android application where you create an OKHTTP instance:
+
+```
+val libRespectCache = LibRespectCacheBuilder.build()
+val okHttpClient = OkHttpClient.Builder()
+    .addInterceptor(LibRespectCacheInterceptor(libRespectCache))
+    .build()
+
+//OR use the proxy
+val httpProxy = LibRespectProxyServer(libRespectCache)
+httpProxy.start() //Now use: httpProxy.listeningPort as the HTTP proxy
+```
+
+
 ### Support single sign-on option
 
 1) Detect RESPECT Launcher apps installed and display login buttons alongside other single sign-on / social login options
@@ -83,17 +116,33 @@ be the Learning Unit to be completed with the following additional parameters:
 * auth : The authentication to use with [xAPI](https://www.xapi.com) and/or [AGS](https://www.imsglobal.org/spec/lti-ags/v2p0/) API. 
 * Some or none of the [OpenID Standard Claims](https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims), e.g. given_name, locale, sub,
   depending on the privacy settings being used by the RESPECT Launcher.
+* http_proxy : an HTTP Proxy provided by the RESPECT launcher app. This proxy MAY download URLs required by the Learning Unit (e.g. when a student is
+  assigned a given Learning Unit).   
 * endpoint_lti_ags : the HTTP url to use for the [LTI Assignment and Grade Services Specification](https://www.imsglobal.org/spec/lti-ags/v2p0/)
 * endpoint : the HTTP url to use for xAPI ( named 'endpoint' because this is as per the Rustici launch spec, see below)
 * All of the [Rustici Launch Parameters](https://github.com/RusticiSoftware/launch/blob/master/lms_lrs.md) as per the xAPI spec.
 
 E.g. where a Learning Unit ID is https://example.org/topic/learningUnit1, then :
 ```
-https://example.org/topic/learningUnit1?respectLaunchVersion=1&auth=[secret]&given_name=John&locale=en-US
+https://example.org/topic/learningUnit1/?respectLaunchVersion=1&auth=[secret]&given_name=John&locale=en-US
+   &http_proxy=http://localhost:8098/
    &endpoint_lti_ags=http://localhost:8097/api/ags
    &endpoint=http://localhost:8097/api/xapi
    &actor={ "name" : ["Project Tin Can"], "mbox" : ["mailto:tincan@scorm.com"] }   
    &registration=760e3480-ba55-4991-94b0-01820dbd23a2   
-   &activity_id=https://example.org/topic/learningUnit1
+   &activity_id=https://example.org/topic/learningUnit1/
 ```
+Each Learning Unit MUST link to a manifest containing a list of all the URLs that need to be available for the Learning Unit
+to run. This allows the RESPECT Launcher App to download these in advance where needed (e.g. if a student is assigned to
+complete the given Learning Unit).
 
+This can be done one of two ways:
+
+* Include a link in the HTML returned by the Learning Unit ID as per:
+```
+<link rel="https://respect.world/ns/learning-unit-urls" type="text/plain" href="urls.txt"/>
+```
+* Use the .well-known path e.g.
+```
+https://https://example.org/topic/learningUnit1/.well-known/respect-urls.txt
+```
