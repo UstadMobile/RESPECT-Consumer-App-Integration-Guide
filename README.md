@@ -1,6 +1,9 @@
 # RESPECT Launcher App Integration Guide
 
-Overview: 
+Overview: The RESPECT Launcher App allows teachers and students to sign in once to easily access any compatible app and control their data. It
+is intended to be an open-source alternative to proprietary commercial solutions such as [Clever](https://clever.com), 
+[ClassLink Launchpad](https://play.google.com/store/apps/details?id=com.classlink.launchpad.android&hl=en), and [Wonde](https://wonde.com/) that
+works offline as well as online.
 
 Terms:
 
@@ -33,6 +36,9 @@ launcher app can be used to launch any RESPECT Compatible app itself as well as 
 * android.packageId: package id of the app on Android
 * android.stores: List of app store URLs from which the app can be downloaded (e.g. Google Play, F-Droid, etc)
 
+The manifest is used by the RESPECT launcher app to enable administrators to easily add a new app by simply copy/pasting a link. It is
+recommended that SHOULD be https://example.org/.well-known/respect-app.json ; such that a user can simply use 'example.org'.
+
 ### Bind RESPECT Launcher Service
 
 The RESPECT client manager service ensures that whilst a RESPECT session is ongoing (e.g. there are any active single sign
@@ -49,7 +55,7 @@ fun onCreate(savedInstanceState: Bundle?) {
 }
 ```
 
-### Supporting single sign-on
+### Support single sign-on option
 
 1) Detect RESPECT Launcher apps installed and display login buttons alongside other single sign-on / social login options
 2) If the user selects a RESPECT Launcher single sign on, then
@@ -59,7 +65,26 @@ val authRequest = RespectSingleSignOnRequest.Builder()
    .build()
 
 val result = respectConsumerManager.requestSingleSignOn(authRequest)
-  
+/*
+ * Result includes:
+ *  result.userId an arbitrary user id string. Anonymization / privacy settings may result in this string being different for the same user
+ *  result.displayName an arbitrary string. This may be the first name of the user or used on greetings
+ *  result.token.bearer (always a Bearer token). Add this to http requests e.g. Authorization: Bearer <token>
+ *  result.endpoints.xapi.url : The xAPI endpoint URL (will be on localhost).
+ *  result.endpoints.oneroster.url : The URL of the OneRoster endpoint (will be on localhost)
+ */  
 ```  
 
+### Supporting launching a specific Learning Unit
 
+Launching a specific Learning Unit is based on normal [app links](https://developer.android.com/training/app-links). The URI will 
+be the Learning Unit to be completed with the following additional parameters 
+* respectLaunchVersion=1 Indicates that the launch is coming from a RESPECT Launcher app
+* auth : The authentication to use with [xAPI](https://www.xapi.com) and/or [AGS](https://www.imsglobal.org/spec/lti-ags/v2p0/) API. 
+* Some or none of the [OpenID Standard Claims](https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims), e.g. given_name, locale, sub,
+  depending on the privacy settings being used by the RESPECT Launcher.
+* endpoint_lti_ags : the HTTP url to use for the [LTI Assignment and Grade Services Specification](https://www.imsglobal.org/spec/lti-ags/v2p0/)
+* endpoint : the HTTP url to use for xAPI ( named 'endpoint' because this is as per the Rustici launch spec, see below)
+* All of the [Rustici Launch Parameters](https://github.com/RusticiSoftware/launch/blob/master/lms_lrs.md) as per the xAPI spec.
+
+ 
