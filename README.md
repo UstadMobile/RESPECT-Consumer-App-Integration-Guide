@@ -110,8 +110,9 @@ val result = respectConsumerManager.requestSingleSignOn(authRequest)
 
 ### Supporting launching a specific Learning Unit
 
-Launching a specific Learning Unit is based on normal [app links](https://developer.android.com/training/app-links). The URI will 
-be the Learning Unit to be completed with the following additional parameters:
+Launching a specific Learning Unit is based on normal [app links](https://developer.android.com/training/app-links). The app links must be verified as usual.
+
+The URI launched by the RESPECT launcher will be the Learning Unit to be completed with the following additional parameters:
 * respectLaunchVersion=1 Indicates that the launch is coming from a RESPECT Launcher app
 * auth : The authentication to use with [xAPI](https://www.xapi.com) and/or [AGS](https://www.imsglobal.org/spec/lti-ags/v2p0/) API. 
 * Some or none of the [OpenID Standard Claims](https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims), e.g. given_name, locale, sub,
