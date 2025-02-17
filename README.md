@@ -5,14 +5,22 @@ is intended to be an open-source alternative to proprietary commercial solutions
 [ClassLink Launchpad](https://play.google.com/store/apps/details?id=com.classlink.launchpad.android&hl=en), and [Wonde](https://wonde.com/) that
 works offline as well as online.
 
+Student information and progress/usage data is accessed and stored using the [Experience API - xAPI](https://www.xapi.com), 
+[OneRoster](https://www.1edtech.org/standards/oneroster), and the [LTI Assignment and Gradebook Services (AGS)](https://www.imsglobal.org/spec/lti-ags/v2p0).
+
 Terms:
 
 __Learning Unit__: A distinct learning unit that can be assigned to a learner. This may or may not involve any assessment. The RESPECT 
 launcher app can be used to launch any RESPECT Compatible app itself as well as launch any specific learning unit.
 
+Testing notes:
+
+* Before library availablity, apps can be tested using any existing implementation of the Experience API, OneRoster, and LTI AGS (as required). APIs 
+  that are not used need not be available (e.g. if an app uses xAPI to save/retrieve progress data, you do not need OneRoster/AGS for testing).
+
 ## Steps
 
-### Create a manifest
+### 1 Create a manifest
 ```
 {
    "name": {
@@ -39,7 +47,9 @@ launcher app can be used to launch any RESPECT Compatible app itself as well as 
 The manifest is used by the RESPECT launcher app to enable administrators to easily add a new app by simply copy/pasting a link. It is
 recommended that SHOULD be https://example.org/.well-known/respect-app.json ; such that a user can simply use 'example.org'.
 
-### Bind RESPECT Launcher Service
+### 2 Add libRESPECT
+
+Add the dependency to Gradle (when available).
 
 The RESPECT client manager service ensures that whilst a RESPECT session is ongoing (e.g. there are any active single sign
 on sessions or any active learning units launched via the launcher) the RESPECT Launcher App will be kept alive (for it to provide
@@ -55,7 +65,7 @@ fun onCreate(savedInstanceState: Bundle?) {
 }
 ```
 
-### Use the libRESPECT Proxy Cache
+### 3 Use the libRESPECT Proxy Cache
 
 The RESPECT Launcher app MAY send your app a signal to download a specific Learning Unit for offline use. This
 can be handled using the libRESPECT cache and service. 
@@ -87,8 +97,7 @@ val httpProxy = LibRespectProxyServer(libRespectCache)
 httpProxy.start() //Now use: httpProxy.listeningPort as the HTTP proxy
 ```
 
-
-### Support single sign-on option
+### 4 Support single sign-on option
 
 1) Detect RESPECT Launcher apps installed and display login buttons alongside other single sign-on / social login options
 2) If the user selects a RESPECT Launcher single sign on, then
@@ -110,7 +119,7 @@ val result = respectConsumerManager.requestSingleSignOn(authRequest)
 
 Once the user has signed in, the client app can use the HTTP APIs to save and retrieve learner data, progress information, etc.
 
-### Supporting launching a specific Learning Unit
+### 5 Support launching a specific Learning Unit
 
 Launching a specific Learning Unit is based on normal [app links](https://developer.android.com/training/app-links). The app links must be verified as usual.
 
