@@ -47,6 +47,10 @@ Testing notes:
 The manifest is used by the RESPECT launcher app to enable administrators to easily add a new app by simply copy/pasting a link. It is
 recommended that SHOULD be https://example.org/.well-known/respect-app.json ; such that a user can simply use 'example.org'.
 
+**Expected outputs**
+* RESPECT Manifest file (as above)
+* OPDS listing learning units (as per OPDS spec above - 1 item per learning unit)
+
 ### 2 Add libRESPECT
 
 Add the dependency to Gradle (when available).
@@ -64,6 +68,9 @@ fun onCreate(savedInstanceState: Bundle?) {
     respectClientManager.bindService(this)
 }
 ```
+
+**Expected outputs**
+* App built with librespect dependency (when available)
 
 ### 3 Use the libRESPECT Proxy Cache
 
@@ -97,6 +104,9 @@ val httpProxy = LibRespectProxyServer(libRespectCache)
 httpProxy.start() //Now use: httpProxy.listeningPort as the HTTP proxy
 ```
 
+**Expected outputs**
+* App built and using http proxy for all http requests
+  
 ### 4 Support single sign-on option
 
 1) Detect RESPECT Launcher apps installed and display login buttons alongside other single sign-on / social login options
@@ -118,6 +128,9 @@ val result = respectConsumerManager.requestSingleSignOn(authRequest)
 ```  
 
 Once the user has signed in, the client app can use the HTTP APIs to save and retrieve learner data, progress information, etc.
+
+**Expected outputs**
+* App built; single sign on is displayed when the RESPECT launcher app is installed. User can sign-in using RESPECT launcher account.
 
 ### 5 Support launching a specific Learning Unit
 
@@ -161,3 +174,11 @@ This can be done one of two ways:
 ```
 https://https://example.org/topic/learningUnit1/.well-known/respect-urls.txt
 ```
+
+
+**Expected outputs**
+* App built where:
+  * Learning unit will open by launching the learning unit URL with the parameters as above (e.g. [deep link](https://developer.android.com/training/app-links/deep-linking))
+  * Learner progress is sent to the xAPI and/or AGS server provided in the URL parameters.
+  * When the lesson is completed the app will finish (such that the user will return to the launcher).
+* text file for each learning unit containing a list of all URLs that need to be available
