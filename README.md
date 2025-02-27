@@ -131,6 +131,7 @@ Once the user has signed in, the client app can use the HTTP APIs to save and re
 
 **Expected outputs**
 * App built; single sign on is displayed when the RESPECT launcher app is installed. User can sign-in using RESPECT launcher account.
+* When RESPECT launcher account is active, then learner progress and results are saved using xAPI and/or AGS parameters as specified in the auth resut.
 
 ### 5 Support launching a specific Learning Unit
 
