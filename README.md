@@ -179,6 +179,6 @@ https://https://example.org/topic/learningUnit1/.well-known/respect-urls.txt
 **Expected outputs**
 * App built where:
   * Learning unit will open by launching the learning unit URL with the parameters as above (e.g. [deep link](https://developer.android.com/training/app-links/deep-linking))
-  * Learner progress is sent to the xAPI and/or AGS server provided in the URL parameters.
+  * Learner progress is sent to the xAPI and/or AGS server provided in the URL parameters. Any compliant server e.g. [ADL LRS](https://github.com/adlnet/ADL_LRS) or [LR SQL](https://github.com/yetanalytics/lrsql) can be used.
   * When the lesson is completed the app will finish (such that the user will return to the launcher).
 * text file for each learning unit containing a list of all URLs that need to be available
