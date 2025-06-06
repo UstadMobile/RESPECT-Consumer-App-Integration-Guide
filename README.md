@@ -139,8 +139,7 @@ A Learning Unit can be any distinct educational experience a learner can underta
 
 If an app contains Learning Units it MUST provide an OPDS catalog listing of those Learning Units where:
 * Each learning unit MUST have its own unique ID that MUST be a unique, valid URL and MUST return an HTTP 200 OK response. The URL MUST NOT include '#' or any reserved URL query parameters used by the launcher to launch a specific learning unit as below.
-* Each learning unit MUST have its own [Readium Web Publication Manifest](https://github.com/readium/webpub-manifest)
-  example in Appendix A lesson001.json. 
+* Each learning unit MUST have its own [Readium Web Publication Manifest](https://github.com/readium/webpub-manifest) example in [Appendix A](#appendix-a-sample-opds-catalogs) lesson001.json. 
 * The manifest MUST be discoverable as per [Readium Web Publication Manifest Section 5](https://github.com/readium/webpub-manifest?tab=readme-ov-file#5-discovering-a-manifest) - this can be done using a link tag e.g. ```<link rel='manifest' type="application/webpub+json" href='lesson001.json'>``` or by adding a Link HTTP header e.g. ```Link: <https://example.app/id/lesson001>; rel="manifest"; type="application/webpub+json"``` as per the Readium spec.
 * The [resources](https://github.com/readium/webpub-manifest?tab=readme-ov-file#21-sub-collections) section of the manifest MUST list all URLs required to run the Learning Resources (e.g. such that
 those resources can be downloaded for later use offline, cached by network operators/schools, etc). All resource URLs and the URL (ID) for the learning unit itself:
@@ -178,7 +177,7 @@ When the respectLaunchVersion parameter is included, the client app MUST use the
 laucnher app and then finish (exit) the activity when the learning unit is complete.
 
 **Expected outputs**
-* OPDS listing learning units (as per OPDS spec above - see examples in Appendix A)
+* OPDS listing learning units (as per OPDS spec above - see examples in [Appendix A](#appendix-a-sample-opds-catalogs))
 * App built where:
   * Learning unit will open by launching the learning unit URL with the parameters as above (e.g. [deep link](https://developer.android.com/training/app-links/deep-linking))
   * Learner progress is sent to the xAPI and/or AGS server provided in the URL parameters. Any compliant server e.g. [ADL LRS](https://github.com/adlnet/ADL_LRS) or [LR SQL](https://github.com/yetanalytics/lrsql) can be used.
