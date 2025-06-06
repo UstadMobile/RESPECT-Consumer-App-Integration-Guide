@@ -1,26 +1,31 @@
 # RESPECT Launcher App Integration Guide
 
-Overview: The RESPECT Launcher App allows teachers and students to sign in once to easily access any compatible app and control their data. It
-is intended to be an open-source alternative to proprietary commercial solutions such as [Clever](https://clever.com), 
-[ClassLink Launchpad](https://play.google.com/store/apps/details?id=com.classlink.launchpad.android&hl=en), and [Wonde](https://wonde.com/) that
-works offline as well as online.
+Overview: 
 
-Student information and progress/usage data is accessed and stored using the [Experience API - xAPI](https://www.xapi.com), 
-[OneRoster](https://www.1edtech.org/standards/oneroster), and the [LTI Assignment and Gradebook Services (AGS)](https://www.imsglobal.org/spec/lti-ags/v2p0).
+The RESPECT Launcher App allows teachers and students to sign in once to easily access any compatible app and keep control their personal data. It
+is intended to be an open-source alternative to proprietary commercial solutions such as [Clever](https://clever.com), 
+[ClassLink Launchpad](https://play.google.com/store/apps/details?id=com.classlink.launchpad.android&hl=en), and [Wonde](https://wonde.com/) that works offline as well as online.
+
+Student information and progress/usage data is accessed and stored using the [Experience API (xAPI)](https://www.xapi.com) and 
+[OneRoster](https://www.1edtech.org/standards/oneroster).
+
+Apps are expected to support two use cases:
+* **User launches a specific Learning Unit from the RESPECT Launcher app**: the RESPECT launcher app is used to launch a specific Learning Unit (e.g. lesson, assessment)
+* **User launches the edtech app and logs in via RESPECT (single sign-on)**: the user launches an edtech app (Edtech API consumer app as below) via their operating system's default launcher and selects to login using their RESPECT launcher account
 
 Terms:
 
-__Learning Unit__: A distinct learning unit that can be assigned to a learner. This may or may not involve any assessment. The RESPECT 
-launcher app can be used to launch any RESPECT Compatible app itself as well as launch any specific learning unit.
+* __Learning Unit__: A distinct learning unit that can be assigned to a learner. A Learning Unit can be any 
+experience that a learner can complete for educational purposes (e.g. a lesson, assessment, simulation, etc). Some apps (e.g. a utility app used to manage school transport) would not be expected to have learning units.
+* __Edtech API consumer app__: An edtech app that targets the APIs as referenced in this guide.
 
 Testing notes:
 
-* Before library availablity, apps can be tested using any existing implementation of the Experience API, OneRoster, and LTI AGS (as required). APIs 
-  that are not used need not be available (e.g. if an app uses xAPI to save/retrieve progress data, you do not need OneRoster/AGS for testing).
+* Before library availablity, apps can be tested using any existing implementation of the Experience API and OneRoster APIs. If an API is not used by an edtech API consumer app (e.g. OneRoster for apps that do not use enrolment information), the parameter can be ignored.
 
 ## Steps
 
-### 1 Create a manifest
+### 1 Create app manifest
 ```
 {
    "name": {
@@ -39,17 +44,15 @@ Testing notes:
 
 * name: a [language map](https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#42-language-maps) of the app's name
 * license: the license ID for the app itself.
-* learningUnits: a link (absolute or relative) to an [OPDS-2.0 catalog](https://drafts.opds.io/opds-2.0.html) of Learning Units
+* learningUnits: a link (absolute or relative) to an [OPDS-2.0 catalog](https://drafts.opds.io/opds-2.0.html) of Learning Units (see Step 5)
 * defaultLaunchUri: the URL that the RESPECT launcher app will use to launch the app if no learning unit is specified.
 * android.packageId: package id of the app on Android
 * android.stores: List of app store URLs from which the app can be downloaded (e.g. Google Play, F-Droid, etc)
 
-The manifest is used by the RESPECT launcher app to enable administrators to easily add a new app by simply copy/pasting a link. It is
-recommended that SHOULD be https://example.org/.well-known/respect-app.json ; such that a user can simply use 'example.org'.
 
 **Expected outputs**
 * RESPECT Manifest file (as above)
-* OPDS listing learning units (as per OPDS spec above - 1 item per learning unit)
+
 
 ### 2 Add libRESPECT
 
@@ -80,14 +83,9 @@ can be handled using the libRESPECT cache and service.
 1) Add the service to AndroidManifest.xml:
 ```
 <service
-      android:name="world.respect.librespect.clientdownloadservice"
+      android:name="world.respect.librespect.CacheProxyService"
       android:enabled="true"
       android:exported="true">
-
-<intent-filter>
-    <action android:name="respect.world.librespect.ACTION_CLIENT_LU_DOWNLOAD" />
-    <action android:name="respect.world.librespect.ACTION_CLIENT_LU_RELEASE" />
-</intent-filter>
 </service>
 ```
 
@@ -131,22 +129,37 @@ Once the user has signed in, the client app can use the HTTP APIs to save and re
 
 **Expected outputs**
 * App built; single sign on is displayed when the RESPECT launcher app is installed. User can sign-in using RESPECT launcher account.
-* When RESPECT launcher account is active, then learner progress and results are saved using xAPI and/or AGS parameters as specified in the auth resut.
+* When RESPECT launcher account is active, then learner progress and results are saved using xAPI and/or oneroster parameters as specified in the auth resut.
 
-### 5 Support launching a specific Learning Unit
+### 5 Support listing and launching learning units
 
-Launching a specific Learning Unit is based on normal [app links](https://developer.android.com/training/app-links). The app links must be verified as usual.
+A Learning Unit can be any distinct educational experience a learner can undertake (e.g. a lesson, assessment, simulation, etc). It has a manifest which lists all the resources required (e.g. so they can be downloaded in advance for the Learning Unit to be used offline later).
 
-When the respectLaunchVersion parameter is included, the client app MUST use the provided endpoints to send progress information back to the RESPECT
-laucnher app and then finish (exit) the activity when the learning unit is complete.
+**Learning Unit Listing:**
 
-The URI launched by the RESPECT launcher will be the Learning Unit to be completed with the following additional parameters:
+If an app contains Learning Units it MUST provide an OPDS catalog listing of those Learning Units where:
+* Each learning unit MUST have its own unique ID that MUST be a unique, valid URL and MUST return an HTTP 200 OK response. The URL MUST NOT include '#' or any reserved URL query parameters used by the launcher to launch a specific learning unit as below.
+* Each learning unit MUST have its own [Readium Web Publication Manifest](https://github.com/readium/webpub-manifest)
+  example in Appendix A lesson001.json. 
+* The manifest MUST be discoverable as per [Readium Web Publication Manifest Section 5](https://github.com/readium/webpub-manifest?tab=readme-ov-file#5-discovering-a-manifest) - this can be done using a link tag e.g. ```<link rel='manifest' type="application/webpub+json" href='lesson001.json'>``` or by adding a Link HTTP header e.g. ```Link: <https://example.app/id/lesson001>; rel="manifest"; type="application/webpub+json"``` as per the Readium spec.
+* The [resources](https://github.com/readium/webpub-manifest?tab=readme-ov-file#21-sub-collections) section of the manifest MUST list all URLs required to run the Learning Resources (e.g. such that
+those resources can be downloaded for later use offline, cached by network operators/schools, etc). All resource URLs and the URL (ID) for the learning unit itself:
+  * MUST return an HTTP 200 response code in response to an HTTP GET request
+  * MUST NOT use a vary header; the response content MUST be the same 
+  * MUST include Content-Length header
+  * MUST include a Last-Modified or ETag header
+  * MUST support [cache validation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching#validation) using If-Modified-Since (when using Last-Modified header) or If-None-Match (when using ETag header)
+
+**Launching a specific Learning Unit**
+
+The RESPECT launcher app launches specific learning units using its URL ID deep link ([app links](https://developer.android.com/training/app-links) on Android); similar to how a deep link would be used to take the user from a messaging app to a specific destination in another app. 
+
+The RESPECT launcher will add the following parameters to the learning unit URL (ID):
+
 * respectLaunchVersion=1 Indicates that the launch is coming from a RESPECT Launcher app
 * auth : The authentication to use with [xAPI](https://www.xapi.com) and/or [AGS](https://www.imsglobal.org/spec/lti-ags/v2p0/) API. 
 * Some or none of the [OpenID Standard Claims](https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims), e.g. given_name, locale, sub,
   depending on the privacy settings being used by the RESPECT Launcher.
-* http_proxy : an HTTP Proxy provided by the RESPECT launcher app. This proxy MAY download URLs required by the Learning Unit (e.g. when a student is
-  assigned a given Learning Unit).   
 * endpoint_lti_ags : the HTTP url to use for the [LTI Assignment and Grade Services Specification](https://www.imsglobal.org/spec/lti-ags/v2p0/)
 * endpoint : the HTTP url to use for xAPI ( named 'endpoint' because this is as per the Rustici launch spec, see below)
 * All of the [Rustici Launch Parameters](https://github.com/RusticiSoftware/launch/blob/master/lms_lrs.md) as per the xAPI spec.
@@ -154,32 +167,147 @@ The URI launched by the RESPECT launcher will be the Learning Unit to be complet
 E.g. where a Learning Unit ID is https://example.org/topic/learningUnit1, then :
 ```
 https://example.org/topic/learningUnit1/?respectLaunchVersion=1&auth=[secret]&given_name=John&locale=en-US
-   &http_proxy=http://localhost:8098/
    &endpoint_lti_ags=http://localhost:8097/api/ags
    &endpoint=http://localhost:8097/api/xapi
    &actor={ "name" : ["Project Tin Can"], "mbox" : ["mailto:tincan@scorm.com"] }   
    &registration=760e3480-ba55-4991-94b0-01820dbd23a2   
    &activity_id=https://example.org/topic/learningUnit1/
 ```
-Each Learning Unit MUST link to a manifest containing a list of all the URLs that need to be available for the Learning Unit
-to run. This allows the RESPECT Launcher App to download these in advance where needed (e.g. if a student is assigned to
-complete the given Learning Unit).
 
-This can be done one of two ways:
-
-* Include a link in the HTML returned by the Learning Unit ID as per:
-```
-<link rel="https://respect.world/ns/learning-unit-urls" type="text/plain" href="urls.txt"/>
-```
-* Use the .well-known path e.g.
-```
-https://https://example.org/topic/learningUnit1/.well-known/respect-urls.txt
-```
-
+When the respectLaunchVersion parameter is included, the client app MUST use the provided endpoints to send progress information back to the RESPECT
+laucnher app and then finish (exit) the activity when the learning unit is complete.
 
 **Expected outputs**
+* OPDS listing learning units (as per OPDS spec above - see examples in Appendix A)
 * App built where:
   * Learning unit will open by launching the learning unit URL with the parameters as above (e.g. [deep link](https://developer.android.com/training/app-links/deep-linking))
   * Learner progress is sent to the xAPI and/or AGS server provided in the URL parameters. Any compliant server e.g. [ADL LRS](https://github.com/adlnet/ADL_LRS) or [LR SQL](https://github.com/yetanalytics/lrsql) can be used.
   * When the lesson is completed the app will finish (such that the user will return to the launcher).
-* text file for each learning unit containing a list of all URLs that need to be available
+
+
+
+# Appendix A: Sample OPDS catalogs
+
+index.json (based on [OPDS specification example 2.1](https://drafts.opds.io/opds-2.0#21-navigation))
+```
+{
+  "metadata": {
+    "title": "Main Menu"
+  },
+  
+  "links": [
+    {"rel": "self", "href": "http://example.app/opds/index.json", "type": "application/opds+json"}
+  ],
+  
+  "navigation": [
+    {
+      "href": "grade1.json", 
+      "title": "Grade 1", 
+      "type": "application/opds+json",
+    },
+    {
+      "href": "grade2.json", 
+      "title": "Grade 2", 
+      "type": "application/opds+json", 
+    }
+  ]
+}
+```
+
+**grade1.json** (based on [OPDS specification example 2.2](https://drafts.opds.io/opds-2.0#22-publications))
+```
+{
+  "metadata": {
+    "title": "Example listing publications"
+  },
+  
+  "links": [
+    {"rel": "self", "href": "http://example.app/opds/grade1.json", "type": "application/opds+json"}
+  ],
+  
+  "publications": [
+    {
+      "metadata": {
+        "@type": "http://schema.org/Game",
+        "title": "Lesson 001",
+        "author": "Mullah Nasruddin",
+        "identifier": "https://example.app/id/lesson001",
+        "language": "en",
+        "modified": "2015-09-29T17:00:00Z",
+        "subject": [
+          {
+            "name": "Mathematics",
+            "scheme": "https://www.bisg.org/#bisac",
+            "code": "MAT000000"
+          }
+        ]
+      },
+      "links": [
+        {"rel": "self", "href": "http://example.app/opds/lesson001.json", "type": "application/opds-publication+json"},
+        {"rel": "http://opds-spec.org/acquisition/open-access", "href": "http://example.app/lessons/lesson001/", "type": "text/html"}
+      ],
+      "images": [
+        {"href": "http://example.org/cover-small.jpg", "type": "image/jpeg", "height": 700, "width": 400},
+      ]
+    },
+    {
+      "metadata": {
+        "@type": "http://schema.org/Game",
+        "title": "Lesson 002",
+        "author": "Mullah Nasruddin",
+        "identifier": "https://example.app/id/lesson002",
+        "language": "en",
+        "modified": "2015-09-29T17:00:00Z"
+      },
+      "links": [
+        {"rel": "self", "href": "http://example.app/opds/lesson002.json", "type": "application/opds-publication+json"},
+        {"rel": "http://opds-spec.org/acquisition/open-access", "href": "http://example.app/lessons/lesson002/", "type": "text/html"}
+      ],
+      "images": [
+        {"href": "http://example.org/cover-small.jpg", "type": "image/jpeg", "height": 700, "width": 400},
+      ]
+    }   
+  ]
+}
+```
+Notes:
+* Subjects use the BISAC or other schema as per [Readium Webpub Manifest spec](https://readium.org/webpub-manifest/contexts/default/#subjects)
+
+
+lesson001.json (based on [OPDS specification example 5.1](https://drafts.opds.io/opds-2.0#51-opds-publication))
+```
+{
+  "metadata": {
+    "@type": "http://schema.org/Game",
+    "title": "Lesson 001",
+    "author": "Mullah Nasruddin",
+    "identifier": "https://example.app/id/lesson001",
+    "language": "en",
+    "modified": "2015-09-29T17:00:00Z",
+    
+  },
+  "links": [
+    {"rel": "self", "href": "http://example.app/opds/lesson001.json", "type": "application/opds-publication+json"},
+    {"rel": "http://opds-spec.org/acquisition/open-access", "href": "http://example.app/lessons/lesson001/", "type": "text/html"}
+  ],
+  "images": [
+    {"href": "http://example.org/cover.jpg", "type": "image/jpeg", "height": 1400, "width": 800},
+    {"href": "http://example.org/cover-small.jpg", "type": "image/jpeg", "height": 700, "width": 400},
+    {"href": "http://example.org/cover.svg", "type": "image/svg+xml"}
+  ],
+  "resources": [
+    {
+      href: "http://example.app/lessons/lesson001/audio.ogg",
+      type: "audio/ogg"
+    },
+    {
+      href: "http://example.app/lessons/lesson001/video.mp4",
+      type: "video/mp4"
+    }
+  ]
+}
+
+```
+Notes:
+
+* Resources list (see [Readium Web Publication Manifest Specification](https://github.com/readium/webpub-manifest?tab=readme-ov-file#21-sub-collections)) includes all resources required to use the learning unit
