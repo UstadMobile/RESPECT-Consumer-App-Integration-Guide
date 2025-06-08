@@ -159,17 +159,17 @@ The RESPECT launcher app launches specific learning units using its URL ID deep 
 The RESPECT launcher will add the following parameters to the learning unit URL (ID):
 
 * respectLaunchVersion=1 Indicates that the launch is coming from a RESPECT Launcher app
-* auth : The authentication to use with [xAPI](https://www.xapi.com) and/or [AGS](https://www.imsglobal.org/spec/lti-ags/v2p0/) API. 
+* auth : The authentication to use with [xAPI](https://www.xapi.com) and/or [OneRoster](https://www.1edtech.org/standards/oneroster) API. 
 * Some or none of the [OpenID Standard Claims](https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims), e.g. given_name, locale, sub,
   depending on the privacy settings being used by the RESPECT Launcher.
-* endpoint_lti_ags : the HTTP url to use for the [LTI Assignment and Grade Services Specification](https://www.imsglobal.org/spec/lti-ags/v2p0/)
+* endpoint_oneroster : the HTTP url to use for the [OneRoster](https://www.1edtech.org/standards/oneroster)
 * endpoint : the HTTP url to use for xAPI ( named 'endpoint' because this is as per the Rustici launch spec, see below)
 * All of the [Rustici Launch Parameters](https://github.com/RusticiSoftware/launch/blob/master/lms_lrs.md) as per the xAPI spec.
 
 E.g. where a Learning Unit ID is https://example.org/topic/learningUnit1, then :
 ```
 https://example.org/topic/learningUnit1/?respectLaunchVersion=1&auth=[secret]&given_name=John&locale=en-US
-   &endpoint_lti_ags=http://localhost:8097/api/ags
+   &endpoint_oneroster=http://localhost:8097/api/oneroster
    &endpoint=http://localhost:8097/api/xapi
    &actor={ "name" : ["Project Tin Can"], "mbox" : ["mailto:tincan@scorm.com"] }   
    &registration=760e3480-ba55-4991-94b0-01820dbd23a2   
@@ -183,7 +183,7 @@ laucnher app and then finish (exit) the activity when the learning unit is compl
 * OPDS listing learning units (as per OPDS spec above - see examples in [Appendix A](#appendix-a-sample-opds-catalogs))
 * App built where:
   * Learning unit will open by launching the learning unit URL with the parameters as above (e.g. [deep link](https://developer.android.com/training/app-links/deep-linking))
-  * Learner progress is sent to the xAPI and/or AGS server provided in the URL parameters. Any compliant server e.g. [ADL LRS](https://github.com/adlnet/ADL_LRS) or [LR SQL](https://github.com/yetanalytics/lrsql) can be used.
+  * Learner progress is sent to the xAPI and/or OneRoster server provided in the URL parameters. Any compliant server e.g. [ADL LRS](https://github.com/adlnet/ADL_LRS) or [LR SQL](https://github.com/yetanalytics/lrsql) can be used.
   * When the lesson is completed the app will finish (such that the user will return to the launcher).
 
 
