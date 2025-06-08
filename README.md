@@ -140,7 +140,8 @@ A Learning Unit can be any distinct educational experience a learner can underta
 **Learning Unit Listing:**
 
 If an app contains Learning Units it MUST provide an OPDS catalog listing of those Learning Units where:
-* Each learning unit MUST have its own unique ID that MUST be a unique, valid URL and MUST return an HTTP 200 OK response. The URL MUST NOT include '#' or any reserved URL query parameters used by the launcher to launch a specific learning unit as below.
+* Each learning unit MUST have its own unique ID that MUST be a unique, valid URL and MUST return an HTTP 200 OK response. The response mime type MUST be ```text/html```,```application/xml```, or ```application/html+xml```. The URL MUST NOT include '#' or any reserved URL query parameters used by the launcher to launch a specific learning unit as below.
+* If the web platform is being supported, then the learning unit ID URL MUST open successfully in a web browser.
 * Each learning unit MUST have its own [Readium Web Publication Manifest](https://github.com/readium/webpub-manifest) example in [Appendix A](#appendix-a-sample-opds-catalogs) lesson001.json. 
 * The manifest MUST be discoverable as per [Readium Web Publication Manifest Section 5](https://github.com/readium/webpub-manifest?tab=readme-ov-file#5-discovering-a-manifest) - this can be done using a link tag e.g. ```<link rel='manifest' type="application/webpub+json" href='../opds/lesson001.json'>``` or by adding a Link HTTP header e.g. ```Link: <http://example.app/opds/lesson001.json>; rel="manifest"; type="application/webpub+json"``` as per the Readium spec.
 * The [resources](https://github.com/readium/webpub-manifest?tab=readme-ov-file#21-sub-collections) section of the manifest MUST list all URLs required to run the Learning Resources (e.g. such that
