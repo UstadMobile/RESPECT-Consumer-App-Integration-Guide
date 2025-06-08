@@ -135,7 +135,13 @@ Once the user has signed in, the client app can use the HTTP APIs to save and re
 
 ### 5 Support listing and launching learning units
 
-A Learning Unit can be any distinct educational experience a learner can undertake (e.g. a lesson, assessment, simulation, etc). It has a manifest which lists all the resources required (e.g. so they can be downloaded in advance for the Learning Unit to be used offline later).
+A Learning Unit can be any distinct educational experience a learner can undertake (e.g. a lesson, assessment, simulation, etc). It has a manifest which lists all the resources required (e.g. so they can be downloaded in advance, via the Internet or other means, for the Learning Unit to be used offline later).
+
+A Learning Unit manifest is based on the [Readium Web Publication Manifest](https://readium.org/webpub-manifest/) which provides a mechanism to provide discoverable metadata (such as title, description, subject, cover images, etc) and a list of resources required by the Learning Unit.
+
+There are two main differences between a [web publication](https://w3c.github.io/dpub-pwp-ucr/) and RESPECT Learning Unit:
+* A web publication is must be presented using web technologies (e.g. HTML, Javascript, etc). A RESPECT Learning Unit can be presented using a native app.
+* A RESPECT Learning Unit is expected to use xAPI or OneRoster to provide progress and usage information.
 
 **Learning Unit Listing:**
 
