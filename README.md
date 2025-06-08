@@ -9,6 +9,8 @@ is intended to be an open-source alternative to proprietary commercial solutions
 Student information and progress/usage data is accessed and stored using the [Experience API (xAPI)](https://www.xapi.com) and 
 [OneRoster](https://www.1edtech.org/standards/oneroster).
 
+The specification can be used for mobile, desktop, and the web. Android and web support is currently being developed; other platform support is expected late 2025.
+
 Apps are expected to support two use cases:
 * **User launches a specific Learning Unit from the RESPECT Launcher app**: the RESPECT launcher app is used to launch a specific Learning Unit (e.g. lesson, assessment)
 * **User launches the edtech app and logs in via RESPECT (single sign-on)**: the user launches an edtech app (Edtech API consumer app as below) via their operating system's default launcher and selects to login using their RESPECT launcher account
@@ -302,6 +304,11 @@ lesson001.json (based on [OPDS specification example 5.1](https://drafts.opds.io
     {
       href: "http://example.app/lessons/lesson001/video.mp4",
       type: "video/mp4"
+    },
+    {
+      href: "http://example.app/lessons/lesson001/script.js",
+      type: "text/javascript",
+      rel: ["respect-not-android"]
     }
   ]
 }
@@ -310,3 +317,4 @@ lesson001.json (based on [OPDS specification example 5.1](https://drafts.opds.io
 Notes:
 
 * Resources list (see [Readium Web Publication Manifest Specification](https://github.com/readium/webpub-manifest?tab=readme-ov-file#21-sub-collections)) includes all resources required to use the learning unit
+* If a resource is not required on a particular platform (e.g. an Android app where common resources are already bundled), then add a rel attribute with ```respect-not-android```, or ```respect-not-web```.
