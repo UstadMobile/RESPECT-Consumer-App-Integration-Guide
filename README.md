@@ -9,7 +9,7 @@ is intended to be an open-source alternative to proprietary commercial solutions
 Student information and progress/usage data is accessed and stored using the [Experience API (xAPI)](https://www.xapi.com) and 
 [OneRoster](https://www.1edtech.org/standards/oneroster).
 
-The specification can be used for mobile, desktop, and the web. Android and web support is currently being developed; other platform support is expected late 2025.
+The specification can be used for mobile, desktop, and the web. Android and web support is currently being developed; support for other platforms is expected in late 2025.
 
 Apps are expected to support two use cases:
 * **User launches a specific Learning Unit from the RESPECT Launcher app**: the RESPECT launcher app is used to launch a specific Learning Unit (e.g. lesson, assessment)
@@ -33,23 +33,38 @@ Testing notes:
    "name": {
       "en-US": "My app"
    },
+   "description": {
+      "en-US": "Short learning app description < 80 chars"
+   },
    license: "(identifier from https://spdx.org/licenses)",
+   website: "https://app.example.org/",
+   icon: "https://app.example.org/icon.svg",
    learningUnits: "https://example.org/opds.json",
    defaultLaunchUri: "https://example.org/",
 
    android {
        packageId: "org.example.app",
-       stores: ["https://play.google.com/store/apps/details?id=org.example.app", "..."]
+       stores: ["https://play.google.com/store/apps/details?id=org.example.app", "..."],
+       sourceCode: "https://www.github.com/Developer/App"
+   },
+   web {
+       url: "https://app.example.org/"
    }
 }
 ```
 
-* name: a [language map](https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#42-language-maps) of the app's name
+* name: a [language map](https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#42-language-maps) of the app's name (MUST NOT exceed 80 characters).
+* description: a [language map](https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#42-language-maps) of the app's description, which MUST NOT exceed 4,000 characters.
 * license: the license ID for the app itself.
+* website: official website for the app.
+* icon: a webp, png, or SVG icon for the app. It MAY be omitted if the website contains a valid [favicon](https://www.w3schools.com/html/html_favicon.asp) with a resolution of 512x512 or higher. If the website does not contain such a favicon, then the icon MUST be explicitly specified. 
 * learningUnits: a link (absolute or relative) to an [OPDS-2.0 catalog](https://drafts.opds.io/opds-2.0.html) of Learning Units (see Step 5)
 * defaultLaunchUri: the URL that the RESPECT launcher app will use to launch the app if no learning unit is specified.
 * android.packageId: package id of the app on Android
 * android.stores: List of app store URLs from which the app can be downloaded (e.g. Google Play, F-Droid, etc)
+* android.sourceCode: If the source code is publicly available, a URL for the source code SHOULD be specified
+* web.url default URL for the user when using a browser, if different to the defaultLaunchUri
+* web.sourceCode: If the source code is publicly available, a URL for the source code SHOULD be specified
 
 
 **Expected outputs**
