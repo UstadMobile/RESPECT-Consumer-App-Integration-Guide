@@ -36,19 +36,19 @@ Testing notes:
    "description": {
       "en-US": "Short learning app description < 80 chars"
    },
-   license: "(identifier from https://spdx.org/licenses)",
-   website: "https://app.example.org/",
-   icon: "https://app.example.org/icon.svg",
-   learningUnits: "https://example.org/opds.json",
-   defaultLaunchUri: "https://example.org/",
+   "license": "(identifier from https://spdx.org/licenses)",
+   "website": "https://app.example.org/",
+   "icon": "https://app.example.org/icon.webp",
+   "learningUnits": "https://example.org/opds.json",
+   "defaultLaunchUri": "https://example.org/",
 
-   android {
-       packageId: "org.example.app",
-       stores: ["https://play.google.com/store/apps/details?id=org.example.app", "..."],
-       sourceCode: "https://www.github.com/Developer/App"
+   "android": {
+       "packageId": "org.example.app",
+       "stores": ["https://play.google.com/store/apps/details?id=org.example.app"],
+       "sourceCode": "https://www.github.com/Developer/App"
    },
-   web {
-       url: "https://app.example.org/"
+   "web" : {
+       "url": "https://app.example.org/"
    }
 }
 ```
@@ -57,7 +57,7 @@ Testing notes:
 * description: a [language map](https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#42-language-maps) of the app's description, which MUST NOT exceed 4,000 characters.
 * license: the license ID for the app itself.
 * website: official website for the app.
-* icon: a webp, png, or SVG icon for the app. It MAY be omitted if the website contains a valid [favicon](https://www.w3schools.com/html/html_favicon.asp) with a resolution of 512x512 or higher. If the website does not contain such a favicon, then the icon MUST be explicitly specified. 
+* icon: a webp or png icon for the app. It MAY be omitted if the website contains a valid [favicon](https://www.w3schools.com/html/html_favicon.asp) with a resolution of 512x512 or higher. If the website does not contain such a favicon, then the icon MUST be explicitly specified. 
 * learningUnits: a link (absolute or relative) to an [OPDS-2.0 catalog](https://drafts.opds.io/opds-2.0.html) of Learning Units (see Step 5)
 * defaultLaunchUri: the URL that the RESPECT launcher app will use to launch the app if no learning unit is specified.
 * android.packageId: package id of the app on Android
@@ -226,12 +226,12 @@ index.json (based on [OPDS specification example 2.1](https://drafts.opds.io/opd
     {
       "href": "grade1.json", 
       "title": "Grade 1", 
-      "type": "application/opds+json",
+      "type": "application/opds+json"
     },
     {
       "href": "grade2.json", 
       "title": "Grade 2", 
-      "type": "application/opds+json", 
+      "type": "application/opds+json"
     }
   ]
 }
@@ -306,8 +306,7 @@ lesson001.json (based on [OPDS specification example 5.1](https://drafts.opds.io
     "author": "Mullah Nasruddin",
     "identifier": "https://example.app/id/lesson001",
     "language": "en",
-    "modified": "2015-09-29T17:00:00Z",
-    
+    "modified": "2015-09-29T17:00:00Z"
   },
   "links": [
     {"rel": "self", "href": "http://example.app/opds/lesson001.json", "type": "application/opds-publication+json"},
@@ -320,17 +319,17 @@ lesson001.json (based on [OPDS specification example 5.1](https://drafts.opds.io
   ],
   "resources": [
     {
-      href: "http://example.app/lessons/lesson001/audio.ogg",
-      type: "audio/ogg"
+      "href": "http://example.app/lessons/lesson001/audio.ogg",
+      "type": "audio/ogg"
     },
     {
-      href: "http://example.app/lessons/lesson001/video.mp4",
-      type: "video/mp4"
+      "href": "http://example.app/lessons/lesson001/video.mp4",
+      "type": "video/mp4"
     },
     {
-      href: "http://example.app/lessons/lesson001/script.js",
-      type: "text/javascript",
-      rel: ["respect-not-android"]
+      "href": "http://example.app/lessons/lesson001/script.js",
+      "type": "text/javascript",
+      "rel": ["respect-not-android"]
     }
   ]
 }
