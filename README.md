@@ -172,6 +172,8 @@ those resources can be downloaded for later use offline, cached by network opera
   * MUST include Content-Length header
   * MUST include a Last-Modified or ETag header
   * MUST support [cache validation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching#validation) using If-Modified-Since (when using Last-Modified header) or If-None-Match (when using ETag header)
+* Each learning unit MUST contain at least one image (e.g. the thumbnail/cover) which MUST be a valid webp, png, or jpg image.
+* Each navigation feed item SHOULD specify a cover image using an alt link with rel=icon set (see grade1.json example in [Appendix A](#appendix-a-sample-opds-catalogs))  
 
 **Launching a specific Learning Unit**
 
@@ -226,16 +228,35 @@ index.json (based on [OPDS specification example 2.1](https://drafts.opds.io/opd
     {
       "href": "grade1.json", 
       "title": "Grade 1", 
-      "type": "application/opds+json"
+      "type": "application/opds+json",
+      "alt": [
+        {
+          "href": "grade1.png",
+          "rel": "icon",
+          "type": "image/png",
+          "title": "Grade 1 cover"
+        }
+      ]
     },
     {
       "href": "grade2.json", 
       "title": "Grade 2", 
-      "type": "application/opds+json"
+      "type": "application/opds+json",
+      "alt": [
+        {
+          "href": "grade2.png",
+          "rel": "icon",
+          "type": "image/png",
+          "title": "Grade 2 cover"
+        }
+      ]
     }
   ]
 }
 ```
+Notes:
+* Setting a cover image for a navigation link is not clearly defined in the OPDS spec. See the [Github Issue on OPDS Repo](https://github.com/opds-community/drafts/issues/64).
+
 
 **grade1.json** (based on [OPDS specification example 2.2](https://drafts.opds.io/opds-2.0#22-publications))
 ```
