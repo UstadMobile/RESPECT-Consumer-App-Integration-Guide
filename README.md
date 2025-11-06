@@ -15,6 +15,8 @@ Apps are expected to support two use cases:
 * **User launches a specific Learning Unit from the RESPECT Launcher app**: the RESPECT launcher app is used to launch a specific Learning Unit (e.g. lesson, assessment)
 * **User launches the edtech app and logs in via RESPECT (single sign-on)**: the user launches an edtech app (Edtech API consumer app as below) via their operating system's default launcher and selects to login using their RESPECT launcher account
 
+App developers are expected to host their own app manifest and OPDS catalogs of available learning units on their own servers.
+
 Terms:
 
 * __Learning Unit__: A distinct learning unit that can be assigned to a learner. A Learning Unit can be any 
