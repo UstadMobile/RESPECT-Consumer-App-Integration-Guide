@@ -231,7 +231,7 @@ index.json (based on [OPDS specification example 2.1](https://drafts.opds.io/opd
       "href": "grade1.json", 
       "title": "Grade 1", 
       "type": "application/opds+json",
-      "alt": [
+      "alternate": [
         {
           "href": "grade1.png",
           "rel": "icon",
@@ -244,7 +244,7 @@ index.json (based on [OPDS specification example 2.1](https://drafts.opds.io/opd
       "href": "grade2.json", 
       "title": "Grade 2", 
       "type": "application/opds+json",
-      "alt": [
+      "alternate": [
         {
           "href": "grade2.png",
           "rel": "icon",
