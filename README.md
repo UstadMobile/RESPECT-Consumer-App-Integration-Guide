@@ -27,6 +27,10 @@ Testing notes:
 
 * Before library availablity, apps can be tested using any existing implementation of the Experience API and OneRoster APIs. If an API is not used by an edtech API consumer app (e.g. OneRoster for apps that do not use enrolment information), the parameter can be ignored.
 
+## Community
+
+Join our [Community Slack Space](https://join.slack.com/t/respectdevelopers/shared_invite/zt-3h04mk3r6-SO1hBLbn0yj5kczPS7q2eg).
+
 ## Steps
 
 ### 1 Create app manifest
