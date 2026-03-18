@@ -29,7 +29,7 @@ Testing notes:
 
 ## Community
 
-Join our [Community Slack Space](https://join.slack.com/t/respectdevelopers/shared_invite/zt-3h04mk3r6-SO1hBLbn0yj5kczPS7q2eg).
+Join our [Community Slack Space](https://join.slack.com/t/respectdevelopers/shared_invite/zt-3t8dpyxxs-0nSsFsLGau5MjVZQzrlvqA).
 
 ## Steps
 
