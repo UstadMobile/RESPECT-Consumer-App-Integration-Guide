@@ -1,5 +1,7 @@
 # RESPECT Launcher App Integration Guide
 
+**THIS GUIDE IS NOW REPLACED: SEE https://github.com/UstadMobile/Respect/blob/main/README_ADD_YOUR_APP.md**
+
 Overview: 
 
 The RESPECT Launcher App allows teachers and students to sign in once to easily access any compatible app and keep control their personal data. It
